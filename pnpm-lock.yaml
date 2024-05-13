@@ -17,6 +17,9 @@ importers:
       '@astrojs/netlify':
         specifier: ^5.2.1
         version: 5.2.1(@opentelemetry/api@1.8.0)(astro@4.8.2(@types/node@20.12.11)(typescript@5.4.5))
+      '@netlify/functions':
+        specifier: ^2.6.3
+        version: 2.6.3(@opentelemetry/api@1.8.0)
       astro:
         specifier: ^4.8.2
         version: 4.8.2(@types/node@20.12.11)(typescript@5.4.5)

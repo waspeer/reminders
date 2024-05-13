@@ -13,6 +13,7 @@
     "@astrojs/check": "^0.6.0",
     "@astrojs/db": "^0.11.1",
     "@astrojs/netlify": "^5.2.1",
+    "@netlify/functions": "^2.6.3",
     "astro": "^4.8.2",
     "astro-webmanifest": "^1.0.0",
     "p-queue": "^8.0.1",
