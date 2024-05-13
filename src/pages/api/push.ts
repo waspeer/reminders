@@ -51,15 +51,19 @@ export const POST: APIRoute = async () => {
     const randomReminder = reminders[Math.floor(Math.random() * reminders.length)];
 
     queue.add(async () => {
-      const sendResult = await webpush.sendNotification(subscription, randomReminder, {
-        vapidDetails: {
-          subject: 'mailto:mail@wannessalome.nl',
-          privateKey: env.PRIVATE_VAPID_KEY,
-          publicKey: env.PUBLIC_VAPID_KEY,
-        },
-      });
+      try {
+        const sendResult = await webpush.sendNotification(subscription, randomReminder, {
+          vapidDetails: {
+            subject: 'mailto:mail@wannessalome.nl',
+            privateKey: env.PRIVATE_VAPID_KEY,
+            publicKey: env.PUBLIC_VAPID_KEY,
+          },
+        });
 
-      console.log('sendResult', sendResult);
+        console.log('sendResult', sendResult);
+      } catch (error) {
+        console.log('error', error);
+      }
     });
   }
 
