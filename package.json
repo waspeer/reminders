@@ -4,17 +4,26 @@
   "type": "module",
   "scripts": {
     "astro": "astro",
-    "build": "astro check && astro build",
+    "build": "astro build",
     "dev": "astro dev",
     "preview": "astro preview",
     "start": "astro dev"
   },
   "dependencies": {
     "@astrojs/check": "^0.6.0",
+    "@astrojs/db": "^0.11.1",
+    "@astrojs/netlify": "^5.2.1",
     "astro": "^4.8.2",
-    "typescript": "^5.4.5"
+    "p-queue": "^8.0.1",
+    "typescript": "^5.4.5",
+    "water.css": "^2.1.1",
+    "web-push": "^3.6.7",
+    "znv": "^0.4.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/serviceworker": "^0.0.86",
+    "@types/web-push": "^3.6.3",
     "@waspeer/config": "^1.1.1",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5"

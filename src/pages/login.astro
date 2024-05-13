@@ -1,0 +1,45 @@
+---
+import { randomUUID } from 'node:crypto';
+import { db } from 'astro:db';
+import { User } from 'astro:db';
+import { eq } from 'astro:db';
+import Layout from '../components/layout.astro';
+import { env } from '../lib/env';
+
+if (Astro.cookies.get('session')) {
+  return Astro.redirect('/');
+}
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+
+  if (email === env.USER_EMAIL && password === env.USER_PASSWORD) {
+    const userResult = await db.select({ id: User.id }).from(User).where(eq(User.email, email));
+    let user = userResult[0];
+
+    if (!user) {
+      [user] = await db.insert(User).values({ id: randomUUID(), email }).returning();
+    }
+
+    Astro.cookies.set('session', JSON.stringify({ userId: user.id }));
+
+    return Astro.redirect('/');
+  } else {
+    return new Response('unauthorized', { status: 401 });
+  }
+}
+---
+
+<Layout>
+  <form method="post">
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" />
+
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" />
+
+    <button type="submit">Login</button>
+  </form>
+</Layout>

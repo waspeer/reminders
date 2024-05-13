@@ -1,16 +1,78 @@
 ---
+import { actions, getActionProps } from 'astro:actions';
+import { db, eq, User } from 'astro:db';
+import Layout from '../components/layout.astro';
 
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const action = formData.get('action') as string;
+
+  if (action === 'logout') {
+    Astro.cookies.delete('session');
+    return Astro.redirect('/login');
+  }
+}
+
+const session = Astro.cookies.get('session')?.json();
+const userId = session?.userId;
+
+if (!userId) {
+  return Astro.redirect('/login');
+}
+
+const [user] = await db
+  .select({ userId: User.id, reminders: User.reminders })
+  .from(User)
+  .where(eq(User.id, userId));
+
+if (!user) {
+  Astro.cookies.delete('session');
+  return Astro.redirect('/login');
+}
+
+const reminders = (user?.reminders as string[]) || [];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <h2>Register</h2>
+  <input type="hidden" id="userId" value={userId} />
+  <button type="button" id="register">Register</button>
+
+  <h2>Reminders</h2>
+  <form method="post">
+    <input {...getActionProps(actions.updateReminders)} />
+    <input type="hidden" name="userId" value={userId} />
+    <textarea name="reminders">{reminders.join('\n')}</textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <h2>Logout</h2>
+  <form method="post">
+    <button name="action" value="logout">Logout</button>
+  </form>
+</Layout>
+
+<script>
+  import { actions } from 'astro:actions';
+
+  if ('serviceWorker' in navigator) {
+    const sw = await navigator.serviceWorker.register('/service-worker.js');
+    document.querySelector('#register')?.addEventListener('click', () => subscribe(sw));
+  }
+
+  async function subscribe(sw: ServiceWorkerRegistration) {
+    const permission = await Notification.requestPermission();
+
+    if (permission === 'granted') {
+      const subscription = await sw.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: import.meta.env.PUBLIC_VAPID_KEY,
+      });
+
+      await actions.subscribe({
+        userId: document.querySelector<HTMLInputElement>('#userId')!.value,
+        subscription: subscription,
+      });
+    }
+  }
+</script>
