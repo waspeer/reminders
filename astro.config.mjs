@@ -11,8 +11,9 @@ export default defineConfig({
     webmanifest({
       name: 'Niet vergeten',
       icon: 'src/images/sun.svg',
-      short_name: 'Niet vergeten',
       display: 'standalone',
+      theme_color: '#45a1b4',
+      background_color: '#d8e373',
     }),
   ],
   experimental: {
