@@ -4,10 +4,12 @@ export default async function handler(request: Request) {
   const url = new URL(request.url);
   const pushUrl = new URL('/api/push', url.origin);
 
-  await fetch(pushUrl, { method: 'POST' });
+  const response = await fetch(pushUrl, { method: 'POST' });
+
+  console.log('triggered push, got response:', await response.text());
 }
 
 export const config: Config = {
-  // Daily at 9am
-  schedule: '0 9 * * *',
+  // Every 5 minutes
+  schedule: '*/5 * * * *',
 };
