@@ -10,6 +10,5 @@ export default async function handler(request: Request) {
 }
 
 export const config: Config = {
-  // Every 5 minutes
-  schedule: '*/5 * * * *',
+  schedule: '0 7 * * *',
 };
